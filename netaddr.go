@@ -777,6 +777,21 @@ func (ip IP) As16() [16]byte {
 	return ret
 }
 
+// As16 returns the IP address in its 16 byte representation.
+// IPv4 addresses are returned in their v6-mapped form.
+// IPv6 addresses with zones are returned without their zone (use the
+// Zone method to get it).
+// The ip zero value returns all zeroes.
+// We pray that dst is
+func (ip IP) As16At(dst []byte) []byte {
+	if len(dst) < 16 {
+		return nil
+	}
+	binary.BigEndian.PutUint64(dst[:8], ip.addr.hi)
+	binary.BigEndian.PutUint64(dst[8:], ip.addr.lo)
+	return dst
+}
+
 // As4 returns an IPv4 or IPv4-in-IPv6 address in its 4 byte representation.
 // If ip is the IP zero value or an IPv6 address, As4 panics.
 // Note that 0.0.0.0 is not the zero value.
