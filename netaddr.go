@@ -503,6 +503,22 @@ func (ip IP) IPAddr() *net.IPAddr {
 	return &net.IPAddr{IP: stdIP, Zone: zone}
 }
 
+// IPAddrAt is like IPAddr, but reuses the provided IP, which
+// must be non-nil. If at.IP has a capacity of 16, IPAddrAt is
+// allocation-free. It returns at to facilitate using this method as a
+// wrapper.
+func (ip IP) IPAddrAt(dst *net.IPAddr) *net.IPAddr {
+	dst.IP, dst.Zone = ip.ipZone(dst.IP)
+	return dst
+}
+
+// IP4AddrAt returns the IP4 addr using the existing buffer. This ignores
+// the zone returned by ip4 addrs
+func (ip IP) IP4AddrAt(dst net.IP) net.IP {
+	dst, _ = ip.ipZone(dst)
+	return dst
+}
+
 // Is4 reports whether ip is an IPv4 address.
 //
 // It returns false for IP4-mapped IPv6 addresses. See IP.Unmap.
