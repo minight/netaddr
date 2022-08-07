@@ -1,4 +1,4 @@
-module inet.af/netaddr
+module github.com/minight/netaddr
 
 go 1.12
 
